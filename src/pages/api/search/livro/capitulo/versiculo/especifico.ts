@@ -40,8 +40,7 @@ export default async function handler(
     res.status(400).json({palavraEncontrada: {} as Biblebook})
   }
 
-  const versiculos = busca.versiculo?.toString().split(",").map(item=>Number(item))
-  
+  const versiculos = busca.versiculo?.toString().split(",").map(item=>Number(item))  
   const palavra_encontrada: Biblebook = await prisma.biblebook.findUnique({
     where:{
       abbrev: busca.livro as string
