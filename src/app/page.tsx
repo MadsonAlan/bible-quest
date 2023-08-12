@@ -7,13 +7,6 @@ import { Key, useState } from "react";
 import { Data } from "@/pages/api/search/livro";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-
-
-export const metadata: Metadata = {
-  title: "Busca de versiculos",
-  description: "Busca de versiculos biblicos usando Next js.",
-}
-
 export interface Book {
   abbrev: string;
   chapters: string[][];
