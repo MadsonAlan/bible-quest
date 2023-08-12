@@ -35,6 +35,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
+  
   const busca = req.query;
   if (!busca.livro || !busca.capitulo || !busca.versiculo) {
     res.status(400).json({palavraEncontrada: {} as Biblebook})
