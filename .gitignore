@@ -26,10 +26,17 @@ yarn-error.log*
 
 # local env files
 .env*.local
-
+.env
+importacaoDeArquivo.ts
+aa.ts
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#json
+aa.json
+acf.json
+nvi.json
