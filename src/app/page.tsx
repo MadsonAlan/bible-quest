@@ -15,7 +15,7 @@ export default async function Home() {
   const livros: BiblebookNoChapters[] = await buscaSomenteLivro()
 
   return (
-    <Card className="w-[440px]">
+    <Card className="max-w-[440px] sm:w-5/6">
       <CardFooter className="space-x-2">
         <SeachWord livros={livros}/>
       </CardFooter>

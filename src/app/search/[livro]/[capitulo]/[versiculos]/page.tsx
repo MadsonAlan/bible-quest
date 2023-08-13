@@ -18,7 +18,7 @@ export default async function BuscaVersiculos({ params }: { params: { livro: str
     params.versiculos.split('-').map(verso => Number(verso)))
 
   return (
-    <Card className="w-[440px]">
+    <Card className="max-w-[440px] sm:w-5/6">
       <CardHeader>
         <CardTitle>{params.livro != 'all' ? params.livro : 'todos os livros'}</CardTitle>
         <CardDescription>
@@ -30,7 +30,7 @@ export default async function BuscaVersiculos({ params }: { params: { livro: str
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[640px] w-full">
+        <ScrollArea className="h-80 w-full">
           {
             palavra_encontrada?.map(
               livro => livro.chapters.map(
