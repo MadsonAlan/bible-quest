@@ -2,8 +2,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Biblebook } from "@/types/wordStructure";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { Key, useState } from "react";
 interface PropsBuscarPalavra {
   palavra_completa: Biblebook[]
@@ -12,7 +12,7 @@ export function BuscaVersiculos({ palavra_completa }: PropsBuscarPalavra) {
   const [ livro, setLivro ] = useState('');
   const [ capitulo, setCapitulo ] = useState('');
   const [ versiculo, setVersiculo ] = useState('');
-  const [ palavra_encontrada, setPalava_encontrada ] = useState<Biblebook[]>([]);
+  const [ palavra_encontrada, setPalava_encontrada ] = useState<Biblebook[]>(palavra_completa);
 
   const handleInputChange = (e: any) => {
     setLivro(e.target.value.split(" ")[ 0 ])
@@ -22,16 +22,24 @@ export function BuscaVersiculos({ palavra_completa }: PropsBuscarPalavra) {
 
   const buscarVersiculos = () => {
     const textoCompleto = palavra_completa;
-    let filtrada: Biblebook | undefined;
+    let filtrada: Biblebook[] = textoCompleto;
     if (livro) {
-      filtrada = textoCompleto.find(palavra => palavra.abbrev == livro)
+      filtrada = textoCompleto.filter(palavra => palavra.abbrev == livro)
       
     }
-    if (Number(capitulo) > 0 && filtrada) {
-      
-      filtrada = {...filtrada, 
-          chapters: [filtrada.chapters[Number(capitulo)-1]]
+    if (Number(capitulo) > 0) {
+
+      for (let index = 0; index < filtrada.length; index++) {
+        let livro = filtrada[ index ];
+
+        livro = {
+          ...livro,
+          chapters: [livro.chapters[Number(capitulo)-1]]
         }
+        filtrada[ index ] = livro;
+      }
+      
+      
     }
     if (versiculo && filtrada) {
       let versiculosSeguidos: number[] = versiculo.split("-").filter(verso => Number(verso) > 0).map(verso => Number(verso))
@@ -42,26 +50,31 @@ export function BuscaVersiculos({ palavra_completa }: PropsBuscarPalavra) {
         do {
           listaDeVersiculos.push(contador)
           contador++
-        } while (contador != versiculosSeguidos[ 1 ]+1);
+        } while (contador != versiculosSeguidos[ 1 ] + 1);
 
       } else if (versiculosEspecificos.length > 0) {
         listaDeVersiculos = versiculosEspecificos
       }
-      for (let index = 0; index < filtrada.chapters.length; index++) {
-        let capitulo = filtrada.chapters[index];
-        capitulo = {...capitulo, verses: capitulo.verses.filter(
-          versiculo => {
-            if (listaDeVersiculos.includes(versiculo.verseNumber)) {
-              return versiculo
-            }
+      for (let indexExtern = 0; indexExtern < filtrada.length; indexExtern++) {
+        let livro = filtrada[ indexExtern ];
+        for (let index = 0; index < livro.chapters.length; index++) {
+          let capitulo = livro.chapters[ index ];
+          capitulo = {
+            ...capitulo, verses: capitulo?.verses.filter(
+              versiculo => {
+                if (listaDeVersiculos.includes(versiculo.verseNumber)) {
+                  return versiculo
+                }
+              }
+            )
           }
-        )}
-        filtrada.chapters[index] = capitulo
+          filtrada[ indexExtern ].chapters[ index ] = capitulo
+        }
       }
+      
     }
-    if (filtrada) {
-      setPalava_encontrada([filtrada])
-    }
+    setPalava_encontrada(filtrada)
+
   }
   return (
     <Card className="w-[440px]">
@@ -71,24 +84,28 @@ export function BuscaVersiculos({ palavra_completa }: PropsBuscarPalavra) {
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[640px] w-full">
-          <>
-            {
-              palavra_encontrada?.map(
-                livro => livro.chapters.map(
-                  chapter => chapter.verses.map(
-                    verse => (
-                      <p key={verse.id as Key | null | undefined}
-                        className="hover:text-sky-700 hover:bg-neutral-200"
-                      ><b>{verse.verseNumber}</b> {verse.word}</p>
-                    )
+          {
+            palavra_encontrada?.map(
+              livro => livro.chapters.map(
+                chapter => chapter?.verses?.map(
+                  verse => (
+                    <div className="p-2 flex text-slate-600 text-sm rounded-lg hover:bg-neutral-200"
+                      key={verse.id as Key | null | undefined}
+                    >
+                      <p
+                        className="hover:text-sky-700"
+                      >
+                        <span className="block font-bold text-slate-800">{`${livro.abbrev} ${chapter.chapterNumber}:${verse.verseNumber}`}</span>
+                        <b>{verse.verseNumber}</b> {verse.word}</p>
+                    </div>
                   )
-                ))
-            }
-          </>
+                )
+              ))
+          }
         </ScrollArea>
       </CardContent>
       <CardFooter className="space-x-2">
-        <Input placeholder="Informe um versículo" onChange={handleInputChange} />
+        <Input placeholder="Ex.: gn 1 1 ou gn 1 1-7 ou gn 1 1,7" onChange={handleInputChange} />
         <Button type="submit" onClick={buscarVersiculos}>Buscar</Button>
       </CardFooter>
     </Card>
