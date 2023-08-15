@@ -1,53 +1,19 @@
 import { Biblebook } from "@/types/wordStructure"
 import { prisma } from "../../../prisma/prismaClient"
 
-export async function buscaVersiculoConsecutivo(
-  livro: string,
-  capitulo: number,
-  versiculos: number[]) {
-  const palavra_encontrada: Biblebook = await prisma.biblebook.findUnique({
-    where: {
-      abbrev: livro as string
-    },
-    include: {
-      chapters: {
-        where: {
-          chapterNumber: capitulo
-        },
-        include: {
-          verses: {
-            where: {
-              verseNumber: {
-                gte: versiculos[0]
-              },
-              AND: {
-                verseNumber: {
-                  lte: versiculos[1]
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }) as Biblebook
-  return palavra_encontrada
-}
-
-
 export async function buscaVersiculoEspecifico(
   livro: string,
   capitulo: number,
   versiculos: number[]){
 
-    const palavra_encontrada: Biblebook = await prisma.biblebook.findUnique({
+    return await prisma.biblebook.findMany({
       where:{
         abbrev: livro as string
       },
       include:{
         chapters:{
           where: {
-            chapterNumber: Number(capitulo)
+            chapterNumber: capitulo
           },
           include:{
             verses:{
@@ -60,7 +26,26 @@ export async function buscaVersiculoEspecifico(
           }
         }
       }
-    }) as Biblebook
-    return palavra_encontrada
+    }) as Biblebook[]
 
+}
+
+
+export async function BuscaVersiculosNoTodo(versiculo:number[]) {
+  return await prisma.biblebook.findMany({
+    include:{
+      chapters:{
+        include:{
+          verses:{
+            where:{
+              verseNumber: {
+                in: versiculo
+              }
+            }
+          }
+        }
+      }
+    }
+  }) as Biblebook[]
+  
 }
