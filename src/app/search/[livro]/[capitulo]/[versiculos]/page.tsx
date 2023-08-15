@@ -6,6 +6,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { Key } from "react";
 import { ArrowLeft } from "lucide-react"
+import { Skeleton } from "@/components/ui/skeleton";
 export const metadata: Metadata = {
   title: 'palavra encontrada',
   description: 'texto encontrado a partir da busca',
@@ -18,41 +19,41 @@ export default async function BuscaVersiculos({ params }: { params: { livro: str
     params.versiculos.split('-').map(verso => Number(verso)))
 
   return (
-    <Card className="max-w-[440px] sm:w-5/6">
-      <CardHeader>
-        <CardTitle>{params.livro != 'all' ? params.livro : 'todos os livros'}</CardTitle>
-        <CardDescription>
-          {
-            params.capitulo > 0 ? 'capitulo ' + params.capitulo : 'todos os capitulos'
-          }:{
-            params.versiculos != '0' ? 'versículo ' + params.versiculos.split('-') : 'todos os versiculos'
-          }
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ScrollArea className="h-80 w-full">
-          {
-            palavra_encontrada?.map(
-              livro => livro.chapters.map(
-                chapter => chapter?.verses?.map(
-                  verse => (
-                    <div className="p-2 flex text-sm rounded-lg hover:border-2 hover:border-neutral-200"
-                      key={verse.id as Key | null | undefined}
-                    >
-                      <p
+      <Card className="max-w-[440px] sm:w-5/6">
+        <CardHeader>
+          <CardTitle>{params.livro != 'all' ? params.livro : 'todos os livros'}</CardTitle>
+          <CardDescription>
+            {
+              params.capitulo > 0 ? 'capitulo ' + params.capitulo : 'todos os capitulos'
+            }:{
+              params.versiculos != '0' ? 'versículo ' + params.versiculos.split('-') : 'todos os versiculos'
+            }
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ScrollArea className="h-80 w-full">
+            {
+              palavra_encontrada?.map(
+                livro => livro.chapters.map(
+                  chapter => chapter?.verses?.map(
+                    verse => (
+                      <div className="p-2 flex text-sm rounded-lg hover:border-2 hover:border-neutral-200"
+                        key={verse.id as Key | null | undefined}
                       >
-                        <span className="block font-bold">{`${livro.abbrev} ${chapter.chapterNumber}:${verse.verseNumber}`}</span>
-                        <b>{verse.verseNumber}</b> {verse.word}</p>
-                    </div>
+                        <p
+                        >
+                          <span className="block font-bold">{`${livro.abbrev} ${chapter.chapterNumber}:${verse.verseNumber}`}</span>
+                          <b>{verse.verseNumber}</b> {verse.word}</p>
+                      </div>
+                    )
                   )
-                )
-              ))
-          }
-        </ScrollArea>
-      </CardContent>
-      <CardFooter>
-        <Link href='/' className="flex"><ArrowLeft />Voltar</Link>
-      </CardFooter>
-    </Card>
+                ))
+            }
+          </ScrollArea>
+        </CardContent>
+        <CardFooter>
+          <Link href='/' className="flex"><ArrowLeft />Voltar</Link>
+        </CardFooter>
+      </Card>
   )
 }
