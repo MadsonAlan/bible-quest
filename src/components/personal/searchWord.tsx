@@ -64,9 +64,6 @@ export function SeachWord({ livros }: PropsBuscarPalavra) {
   }
   return (
     <div className="flex-1 gap-4 grid grid-flow-row auto-rows-max p-4 items-center justify-center">
-      <div className="flex-1 col-span-2">
-        <TogleTheme/>
-      </div>
       <div>
         <Label className="block font-bold text-slate-800 mb-2">Livro</Label>
         <Combobox livros={livrosList} livroSelecionado={atualizarLivro}/>
