@@ -19,12 +19,12 @@ export function MenuNavigation() {
       <MenubarMenu>
         <MenubarTrigger><Link href={'/'} replace>Ler a biblia</Link></MenubarTrigger>
       </MenubarMenu>
-      <MenubarMenu>
+      {/* <MenubarMenu>
         <MenubarTrigger><Link href={'/feed'} replace>Feed de estudos</Link></MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger>Meus estudos</MenubarTrigger>
-      </MenubarMenu>
+      </MenubarMenu> */}
     </Menubar>
   )
 }
