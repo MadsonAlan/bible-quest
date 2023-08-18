@@ -6,6 +6,11 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { Key } from "react";
 import { ArrowLeft } from "lucide-react"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Separator } from "@/components/ui/separator";
+import { ShareSocialMedia } from "@/components/personal/shareSocialMedia";
+
+
 export const metadata: Metadata = {
   title: 'palavra encontrada',
   description: 'texto encontrado a partir da busca',
@@ -16,6 +21,18 @@ export default async function BuscaVersiculos({ params }: { params: { livro: str
     params.livro,
     Number(params.capitulo),
     params.versiculos.split('-').map(verso => Number(verso)))
+    
+  let texto = '';
+  const textoCompleto = (palavra_buscada: Biblebook[]) => {
+    palavra_buscada?.map(
+      livro => livro.chapters.map(
+        chapter => chapter?.verses?.map(
+          verse => texto =texto+"%0a"+verse.verseNumber+" "+verse.word
+        )
+      )
+    )
+    return texto
+  }
 
   return (
     <Card className="max-w-[440px] sm:w-5/6">
@@ -35,23 +52,43 @@ export default async function BuscaVersiculos({ params }: { params: { livro: str
             palavra_encontrada?.map(
               livro => livro.chapters.map(
                 chapter => chapter?.verses?.map(
-                  verse => (
-                    <div className="p-2 flex text-sm rounded-lg hover:border-2 hover:border-neutral-200"
-                      key={verse.id as Key | null | undefined}
-                    >
-                      <p
-                      >
-                        <span className="block font-bold">{`${livro.abbrev} ${chapter.chapterNumber}:${verse.verseNumber}`}</span>
-                        <b>{verse.verseNumber}</b> {verse.word}</p>
-                    </div>
-                  )
+                  verse => {
+                    texto =texto+" "+verse.verseNumber+" "+verse.word
+                    return (
+                    <Accordion type="single" collapsible key={verse.id as Key | null | undefined}>
+                      <AccordionItem value="item-1">
+                        <AccordionTrigger>
+                          <div className="flex text-sm text-left">
+                            <p
+                            >
+                              <span className="block font-bold">{`${livro.abbrev} ${chapter.chapterNumber}:${verse.verseNumber}`}</span>
+                              <b>{verse.verseNumber}</b> {verse.word}</p>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <Separator className="mb-4" />
+                          <ShareSocialMedia path={`"${livro.abbrev}/${chapter.chapterNumber}/${verse.verseNumber}"`} textComment={verse.word as string} titleShare={`${livro.abbrev} ${chapter.chapterNumber}:${verse.verseNumber}`} />
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  )}
                 )
               ))
           }
         </ScrollArea>
       </CardContent>
       <CardFooter>
-        <Link href='/' className="flex"><ArrowLeft />Voltar</Link>
+        <div className="flex flex-1 justify-between">
+          <Link href='/' className="flex"><ArrowLeft />Voltar</Link>
+          <span className="text-sm">
+            <ShareSocialMedia
+              path={`${params.livro}/${params.capitulo}/${params.versiculos}`}
+              textComment={'Que texto incrível'}
+              titleShare={`${params.livro != 'all' ? params.livro : 'todos os livros'} ${params.capitulo > 0 ? 'capitulo ' + params.capitulo : 'todos os capitulos'
+                }:${params.versiculos != '0' ? 'versículo ' + params.versiculos.split('-') : 'todos os versiculos'
+                }`}
+            /></span>
+        </div>
       </CardFooter>
     </Card>
   )
