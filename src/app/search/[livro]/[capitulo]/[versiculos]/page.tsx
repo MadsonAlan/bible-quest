@@ -21,18 +21,6 @@ export default async function BuscaVersiculos({ params }: { params: { livro: str
     params.livro,
     Number(params.capitulo),
     params.versiculos.split('-').map(verso => Number(verso)))
-    
-  let texto = '';
-  const textoCompleto = (palavra_buscada: Biblebook[]) => {
-    palavra_buscada?.map(
-      livro => livro.chapters.map(
-        chapter => chapter?.verses?.map(
-          verse => texto =texto+"%0a"+verse.verseNumber+" "+verse.word
-        )
-      )
-    )
-    return texto
-  }
 
   return (
     <Card className="max-w-[440px] sm:w-5/6">
@@ -52,9 +40,7 @@ export default async function BuscaVersiculos({ params }: { params: { livro: str
             palavra_encontrada?.map(
               livro => livro.chapters.map(
                 chapter => chapter?.verses?.map(
-                  verse => {
-                    texto =texto+" "+verse.verseNumber+" "+verse.word
-                    return (
+                  verse => (
                     <Accordion type="single" collapsible key={verse.id as Key | null | undefined}>
                       <AccordionItem value="item-1">
                         <AccordionTrigger>
@@ -67,11 +53,11 @@ export default async function BuscaVersiculos({ params }: { params: { livro: str
                         </AccordionTrigger>
                         <AccordionContent>
                           <Separator className="mb-4" />
-                          <ShareSocialMedia path={`"${livro.abbrev}/${chapter.chapterNumber}/${verse.verseNumber}"`} textComment={verse.word as string} titleShare={`${livro.abbrev} ${chapter.chapterNumber}:${verse.verseNumber}`} />
+                          <ShareSocialMedia path={`${livro.abbrev}/${chapter.chapterNumber}/${verse.verseNumber}`} textComment={verse.word as string} titleShare={`${livro.abbrev} ${chapter.chapterNumber}:${verse.verseNumber}`} />
                         </AccordionContent>
                       </AccordionItem>
                     </Accordion>
-                  )}
+                  )
                 )
               ))
           }
