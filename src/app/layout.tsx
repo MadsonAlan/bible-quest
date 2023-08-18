@@ -18,13 +18,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
+      <head>
+        <meta property="og:title" content="Conheça a palavra de Deus" />
+        <meta
+          property="og:image"
+          content={`${process.env.NEXT_PUBLIC_URL_BASE}og`}
+        />
+        <meta
+          property="og:description"
+          content="Um lugar para examinar a palavra do Senhor"
+        />
+      </head>
       <body className={inter.className}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <MenuNavigation />
-            <div className="flex min-h-screen items-center justify-center">
-              {children}
-            </div>
-          </ThemeProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <MenuNavigation />
+          <div className="flex min-h-screen items-center justify-center">
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   )
